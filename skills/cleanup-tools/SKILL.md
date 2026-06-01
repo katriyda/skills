@@ -1,6 +1,6 @@
 ---
 name: cleanup-tools
-description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器、Skill 和 Hooks。当用户说"清理插件"、"卸载插件"、"哪些没用"、"精简插件"、"cleanup"、"remove unused plugins"时触发。
+description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器、Skill 和 Hooks。
 ---
 
 # 清理助手

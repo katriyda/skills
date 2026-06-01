@@ -1,6 +1,6 @@
 ---
 name: agent-tools
-description: 扫描当前项目技术栈，推荐 Claude Code 插件、LSP、MCP、Skill。当用户说"配置项目"、"推荐插件"、"setup project"、"安装什么插件"、"这个项目需要什么"时触发。
+description: 扫描当前项目技术栈，推荐 Claude Code 插件、LSP、MCP 和 Skill。
 ---
 
 # Agent 工具推荐
