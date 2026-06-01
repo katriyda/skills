@@ -1,25 +1,37 @@
-# agent-tools
+# Skills
 
-Claude Code 插件：扫描项目技术栈，智能推荐适合的插件、LSP、MCP 服务器和 Skill。
+My collection of Claude Code skills.
 
-## 功能
+[中文](#中文) | [English](#english)
 
-- 自动识别项目语言、框架、工具链
-- 查询已安装的插件，避免重复推荐
-- WebSearch 验证推荐质量（活跃度、维护状态）
-- 输出简洁的推荐报告 + 安装命令
+---
 
-## 安装
+## English
+
+### Install
 
 ```bash
 claude plugins add katriyda/skills
 ```
 
-## 使用
+### Skills
 
-在 Claude Code 中说：
+| Skill | Description | Triggers |
+|---|---|---|
+| [agent-tools](skills/agent-tools/) | Scan project tech stack, recommend plugins, LSP, MCP and skills | "推荐插件", "这个项目需要什么", "setup project" |
 
-- "推荐插件"
-- "这个项目需要什么"
-- "配置项目"
-- "setup project"
+---
+
+## 中文
+
+### 安装
+
+```bash
+claude plugins add katriyda/skills
+```
+
+### Skills 列表
+
+| Skill | 说明 | 触发词 |
+|---|---|---|
+| [agent-tools](skills/agent-tools/) | 扫描项目技术栈，推荐插件、LSP、MCP 和 Skill | "推荐插件", "这个项目需要什么", "setup project" |
