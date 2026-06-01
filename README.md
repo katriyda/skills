@@ -12,7 +12,7 @@ Claude Code 插件：扫描项目技术栈，智能推荐适合的插件、LSP�
 ## 安装
 
 ```bash
-claude plugins add <your-github-username>/agent-tools
+claude plugins add katriyda/skills
 ```
 
 ## 使用
