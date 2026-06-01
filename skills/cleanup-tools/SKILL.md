@@ -1,38 +1,32 @@
 ---
 name: cleanup-tools
-description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器、Skill 和 Hooks。
+description: 检测并推荐卸载多余的插件、MCP 服务器、Skill 和 Hooks。
 ---
 
 # 清理助手
 
-扫描当前 Claude Code 环境，找出多余的、重复的、低质量的插件/MCP/Skill/Hooks，推荐卸载。
+扫描当前环境，找出多余的、重复的、低质量的插件/MCP/Skill/Hooks，推荐卸载。
 
 ## 执行流程
 
 ### 1. 全量扫描当前环境
 
-扫描以下配置文件，确保不遗漏：
+不要写死路径。先判断当前用的是什么工具（Claude Code、OpenCode、Cursor 等），然后用对应的文档代理查询该工具的配置文件位置和管理方式。
 
-| 内容 | 路径 |
-|---|---|
-| 已安装插件 | `~/.claude/plugins/installed_plugins.json` |
-| 插件启用状态 | `~/.claude/settings.json` → `enabledPlugins` |
-| MCP 服务器（local/user） | `~/.claude.json` → `mcpServers` 和 `projects.<路径>.mcpServers` |
-| MCP 服务器（project） | `./.mcp.json` → `mcpServers` |
-| 插件自带 MCP | `~/.claude/plugins/cache/*/` 下的 `.mcp.json` |
-| Skills（用户级） | `~/.claude/skills/` |
-| Skills（项目级） | `./.claude/skills/` 或 `./.claude/commands/` |
-| Hooks | `~/.claude/settings.json` 和 `./.claude/settings.json` 和 `./.claude/settings.local.json` → `hooks` |
-| Rules | `~/.claude/rules/` 和 `./.claude/rules/` |
+查询内容：
+- 已安装的插件列表和启用状态
+- 已配置的 MCP 服务器（注意不同作用域：用户级、项目级、local 等）
+- 已安装的 Skill 和 commands
+- Hooks 和 rules 配置
 
-**注意**：`~/.claude.json` 和 `~/.claude/settings.json` 是两个不同的文件！前者存储 MCP 服务器和运行时状态，后者存储行为配置（权限、hooks、环境变量等）。`claude mcp add` 默认写入 `~/.claude.json`。
+确保不遗漏任何作用域的配置。
 
 ### 2. 逐项分析
 
 对每个已安装的项目，从以下维度评估：
 
-**冗余性** — Claude Code 是否已有等效的内置功能？
-- 比如：某些 MCP 提供的功能 Claude Code 自己就能做（文件操作、搜索、git 等）
+**冗余性** — 工具本身是否已有等效的内置功能？
+- 比如：某些 MCP 提供的功能工具自己就能做（文件操作、搜索、git 等）
 - 比如：某些 skill 的功能已经被其他插件覆盖
 
 **活跃度** — 这个插件/MCP 还在维护吗？
@@ -66,10 +60,10 @@ description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器�
 
 ## 推荐卸载
 
-### 🔴 冗余（Claude Code 已有等效功能）
+### 🔴 冗余（工具已有等效功能）
 | 名称 | 类型 | 原因 |
 |---|---|---|
-| xxx | MCP | Claude Code 内置的 xxx 工具已覆盖此功能 |
+| xxx | MCP | 内置的 xxx 工具已覆盖此功能 |
 
 ### 🟡 重叠（多个工具做同一件事）
 | 名称 | 类型 | 原因 |
@@ -84,7 +78,7 @@ description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器�
 ### ⚪ 可选清理（影响性能或增加上下文）
 | 名称 | 类型 | 原因 |
 |---|---|---|
-| xxx | 插件 | 每次会话加载但很少使用，增加上下文约 N tokens |
+| xxx | 插件 | 每次会话加载但很少使用 |
 
 ## 建议保留
 | 名称 | 类型 | 原因 |
