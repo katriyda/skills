@@ -1,48 +1,48 @@
 ---
 name: agent-tools
-description: Scan project tech stack, recommend Claude Code plugins, LSP, MCP, and Skills. Triggered by: "推荐插件", "这个项目需要什么", "配置项目", "setup project", "install plugins", "what does this project need".
+description: 扫描当前项目技术栈，推荐 Claude Code 插件、LSP、MCP、Skill。当用户说"配置项目"、"推荐插件"、"setup project"、"安装什么插件"、"这个项目需要什么"时触发。
 ---
 
-# Agent Tools Recommender
+# Agent 工具推荐
 
-Scan the project directory, identify the tech stack, and recommend suitable Claude Code plugins, LSP servers, MCP servers, and Skills.
+扫描项目目录，自动识别技术栈，推荐适合的 Claude Code 插件、LSP、MCP 服务器和 Skill。
 
-## Workflow
+## 执行流程
 
-### 1. Identify project tech stack
+### 1. 识别项目技术栈
 
-Do not use a hardcoded file-to-language mapping table. Scan the project directory and use your own judgment:
-- Look at directory structure, config files, source code, dependency files
-- Read key config files (e.g. package.json, pom.xml, go.mod, etc.)
-- Identify language, framework, build tools, package manager, test framework, etc.
-- Also identify frontend tech stack if present
+不要用固定的文件映射表。直接扫描项目目录，根据你的判断识别：
+- 看目录结构、配置文件、源码文件、依赖文件
+- 读取关键配置文件的内容（如 package.json、pom.xml、go.mod 等）
+- 识别语言、框架、构建工具、包管理器、测试框架等
+- 如果有前端代码，也识别前端技术栈
 
-### 2. Check currently installed plugins and Skills
+### 2. 查询当前已安装的插件和 Skill
 
-Do not assume a fixed management command. Figure out what's actually available in the current environment:
-- Read plugin config files to see what's already installed
-- Use whatever method the current environment supports to query existing MCP servers
-- Check installed skills
-- Record everything so you can skip already-installed items in recommendations
+不要假设固定的管理命令。自己查清楚当前环境：
+- 读取插件配置文件了解已装了什么
+- 用当前环境支持的方式查询已有的 MCP 服务器
+- 检查已安装的 skills
+- 记录下来，后面推荐时跳过已有的
 
-### 3. Search and recommend
+### 3. 搜索推荐
 
-Do not do mechanical "language X → plugin X" mapping. Actually analyze the project's real needs:
+不要只按"用了什么语言就推什么插件"这种机械映射。要真正分析项目的实际需求：
 
-- What is this project **missing**? What's already covered, and what gaps remain?
-- What is the project's **workflow**? (e.g., has database → recommend database MCP; has lots of tests → recommend test-related skill; uses Docker → recommend container tools; has API → recommend API debugging tools)
-- Recommendations must be **genuinely useful**, not padding. Better to recommend fewer high-quality items than a long list nobody will install
+- 这个项目**缺什么**？已有的工具覆盖了什么，还差什么？
+- 项目的**工作流**是什么样的？（比如：有数据库 → 推数据库 MCP；有大量测试 → 推测试相关 skill；用 Docker → 推容器相关工具；有 API → 推 API 调试工具）
+- 推荐的东西要**真的有用**，不是凑数。宁可少推荐几个高质量的，也不要列一堆用户装了也不会用的
 
-Use WebSearch to confirm recommended items actually exist and are well-maintained. Also check the marketplace directory for available plugins.
+用 WebSearch 查询确认推荐的东西确实存在且好用。同时检查 marketplace 目录中已有的可用插件。
 
-For each candidate recommendation, verify quality:
-- GitHub repo star count, recent update time, issue activity
-- npm/pypi weekly download counts
-- Prefer plugins from the official marketplace
-- Do not recommend outdated, inactive, or unmaintained projects
+对每个候选推荐，必须验证质量：
+- GitHub 仓库的 star 数、最近更新时间、issue 活跃度
+- npm/pypi 等包管理器的周下载量
+- 如果是官方 marketplace 里的插件，优先推荐
+- 过时、不活跃、无人维护的不要推荐
 
-### 4. Output recommendation report
+### 4. 输出推荐报告
 
-Keep it concise. Each recommendation should explain **why it's useful for this specific project** (not "because you use Java", but "your project has heavy MyBatis SQL, and LSP can help with type checking").
+简洁明了，每个推荐说清楚**为什么推荐这个**（不是"因为你用了 Java"，而是"你项目里有大量 MyBatis SQL，LSP 能帮你做类型检查"）。
 
-Skip already-installed items. If WebSearch returns no results, recommend based on known information — do not fabricate plugins that don't exist.
+已安装的标记跳过。如果 WebSearch 没找到结果，基于已知信息推荐，不要编造不存在的插件。
