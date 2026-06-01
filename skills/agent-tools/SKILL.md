@@ -19,11 +19,21 @@ description: 扫描当前项目技术栈，推荐 Claude Code 插件、LSP、MCP
 
 ### 2. 查询当前已安装的插件和 Skill
 
-不要假设固定的管理命令。自己查清楚当前环境：
-- 读取插件配置文件了解已装了什么
-- 用当前环境支持的方式查询已有的 MCP 服务器
-- 检查已安装的 skills
-- 记录下来，后面推荐时跳过已有的
+扫描以下配置文件，确保不遗漏：
+
+| 内容 | 路径 |
+|---|---|
+| 已安装插件 | `~/.claude/plugins/installed_plugins.json` |
+| 插件启用状态 | `~/.claude/settings.json` → `enabledPlugins` |
+| MCP 服务器（local/user） | `~/.claude.json` → `mcpServers` 和 `projects.<路径>.mcpServers` |
+| MCP 服务器（project） | `./.mcp.json` → `mcpServers` |
+| 插件自带 MCP | `~/.claude/plugins/cache/*/` 下的 `.mcp.json` |
+| Skills（用户级） | `~/.claude/skills/` |
+| Skills（项目级） | `./.claude/skills/` 或 `./.claude/commands/` |
+| Hooks | `~/.claude/settings.json` 和 `./.claude/settings.json` 和 `./.claude/settings.local.json` → `hooks` |
+| Rules | `~/.claude/rules/` 和 `./.claude/rules/` |
+
+**注意**：`~/.claude.json` 和 `~/.claude/settings.json` 是两个不同的文件！前者存储 MCP 服务器和运行时状态，后者存储行为配置（权限、hooks、环境变量等）。`claude mcp add` 默认写入 `~/.claude.json`。
 
 ### 3. 搜索推荐
 

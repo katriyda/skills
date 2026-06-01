@@ -11,11 +11,21 @@ description: 检测并推荐卸载多余的 Claude Code 插件、MCP 服务器�
 
 ### 1. 全量扫描当前环境
 
-收集所有已安装的内容，不要遗漏：
-- **插件**：读取插件配置文件，获取所有已安装插件列表
-- **MCP 服务器**：查询所有已配置的 MCP 服务器（包括 settings.json、.mcp.json、项目级配置等）
-- **Skill**：检查所有已安装的 skill
-- **Hooks**：读取 hooks 配置
+扫描以下配置文件，确保不遗漏：
+
+| 内容 | 路径 |
+|---|---|
+| 已安装插件 | `~/.claude/plugins/installed_plugins.json` |
+| 插件启用状态 | `~/.claude/settings.json` → `enabledPlugins` |
+| MCP 服务器（local/user） | `~/.claude.json` → `mcpServers` 和 `projects.<路径>.mcpServers` |
+| MCP 服务器（project） | `./.mcp.json` → `mcpServers` |
+| 插件自带 MCP | `~/.claude/plugins/cache/*/` 下的 `.mcp.json` |
+| Skills（用户级） | `~/.claude/skills/` |
+| Skills（项目级） | `./.claude/skills/` 或 `./.claude/commands/` |
+| Hooks | `~/.claude/settings.json` 和 `./.claude/settings.json` 和 `./.claude/settings.local.json` → `hooks` |
+| Rules | `~/.claude/rules/` 和 `./.claude/rules/` |
+
+**注意**：`~/.claude.json` 和 `~/.claude/settings.json` 是两个不同的文件！前者存储 MCP 服务器和运行时状态，后者存储行为配置（权限、hooks、环境变量等）。`claude mcp add` 默认写入 `~/.claude.json`。
 
 ### 2. 逐项分析
 
