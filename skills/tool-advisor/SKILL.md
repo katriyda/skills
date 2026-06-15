@@ -9,18 +9,46 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 
 ## 工作流程
 
-### 第一步：读取本地配置
+### 第一步：检测当前 Agent 工具
 
-读取以下位置获取已安装的工具列表：
+首先检测当前使用的 agent 工具类型，按优先级检查：
 
+1. **OpenCode** — 检查 `~/.config/opencode/` 目录是否存在
+2. **Claude Code** — 检查 `~/.claude/` 目录是否存在
+3. **Cursor** — 检查 `~/.cursor/` 或项目下 `.cursor/` 目录
+4. **其他工具** — 根据环境变量或配置文件判断
+
+确定工具后，使用对应的配置路径读取已安装的工具列表。
+
+### 第二步：读取本地配置
+
+根据检测到的工具类型，读取对应的配置：
+
+#### OpenCode
+1. **MCP 配置**：读取 `~/.config/opencode/opencode.jsonc` 或项目级 `.opencode/opencode.jsonc`
+2. **已安装插件**：读取配置文件中的 `plugins` 字段
+3. **Skill 目录**：扫描 `~/.config/opencode/skills/` 获取已安装的 skill（每个子目录即一个 skill，读取其 `SKILL.md`）
+4. **项目级 skill**：扫描当前项目目录下的 `.opencode/skills/`
+5. **系统命令**：检查 PATH 中可用的命令行工具
+
+#### Claude Code
 1. **MCP 配置**：读取 `~/.claude/settings.json` 中的 `mcpServers` 字段
 2. **已安装插件**：读取 `~/.claude/settings.json` 中的 `enabledPlugins` 字段
 3. **插件缓存目录**：扫描 `~/.claude/plugins/cache/` 获取插件提供的 skill（通过 `**/SKILL.md` 搜索）
-4. **独立安装的 skill**：扫描 `~/.claude/skills/` 获取通过 `npx skills@latest add` 等方式独立安装的 skill（每个子目录即一个 skill，读取其 `SKILL.md` 或 `README.md` 获取描述）
-5. **项目级 skill**：扫描当前项目目录下的 `.claude/skills/` 获取项目专属 skill
+4. **独立安装的 skill**：扫描 `~/.claude/skills/` 获取通过 `npx skills@latest add` 等方式独立安装的 skill
+5. **项目级 skill**：扫描当前项目目录下的 `.claude/skills/`
 6. **系统命令**：检查 PATH 中可用的命令行工具
 
-### 第二步：分析用户任务
+#### Cursor
+1. **MCP 配置**：读取 `~/.cursor/mcp.json` 或项目级 `.cursor/mcp.json`
+2. **已安装插件**：检查 Cursor 扩展目录
+3. **Skill 目录**：扫描项目下的 `.cursor/skills/`（如果存在）
+4. **系统命令**：检查 PATH 中可用的命令行工具
+
+#### 其他工具
+根据实际情况读取配置文件，或提示用户手动提供已安装工具列表。
+
+### 第三步：分析用户任务
 
 将用户任务拆解为以下维度：
 
@@ -43,7 +71,7 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
    - 框架：React、Vue、Next.js、Express、FastAPI 等
    - 平台：Windows、Linux、macOS、Docker
 
-### 第三步：匹配工具
+### 第四步：匹配工具
 
 从本地已安装的工具中，按以下优先级匹配：
 
@@ -61,7 +89,7 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 1. 原生工具：git、npm、docker 等
 2. 第三方工具：已安装的 CLI 工具
 
-### 第四步：生成推荐
+### 第五步：生成推荐
 
 输出格式：
 
@@ -71,6 +99,7 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 **任务描述**：[用户原始描述]
 **任务类型**：[类型]
 **技术栈**：[识别到的技术栈]
+**检测到的工具**：[OpenCode/Claude Code/Cursor/其他]
 
 ## 🔧 推荐工具组合
 
@@ -122,7 +151,7 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 ### 1. 本地没有合适工具
 如果本地没有匹配的工具，推荐安装：
 - MCP：给出安装命令或 GitHub 链接
-- Skill：给出 `/plugin install` 命令
+- Skill：给出对应的安装命令（OpenCode: 复制到 skills 目录；Claude Code: `/plugin install`；Cursor: 配置文件）
 - 命令行：给出安装方式（npm、brew、apt 等）
 
 ### 2. 任务过于复杂
@@ -151,6 +180,7 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 **任务描述**：把 CSV 文件转成 Excel 并添加图表
 **任务类型**：数据处理 + 文件转换
 **技术栈**：Python/Node.js + Excel 处理库
+**检测到的工具**：OpenCode
 
 ## 🔧 推荐工具组合
 
@@ -212,5 +242,5 @@ description: 智能工具推荐器 - 分析任务并推荐最佳的 MCP + Skill 
 1. **始终读取本地配置**：不要假设用户有什么工具，实际读取配置文件
 2. **优先使用已有工具**：推荐本地已安装的工具，减少用户安装负担
 3. **给出具体命令**：不要只说"用 XX 工具"，要给出具体的调用方式
-4. **考虑 Windows 环境**：用户使用 Windows + PowerShell，命令要适配
+4. **考虑跨平台环境**：用户可能使用 Windows、Linux 或 macOS，命令要适配
 5. **中文输出**：所有推荐和说明使用中文
